@@ -950,4 +950,4 @@ class Login():
             self.currentPwd.delete(0,100)
             self.newPwd.delete(0,100)
 
-app = MainFrame()
+app = Login()

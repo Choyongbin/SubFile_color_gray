@@ -31,7 +31,7 @@ class MainFrame():
         self.font=tk.font.Font(family="맑은 고딕", weight="bold")
         
         w = 650 #Width of Frame
-        h = 300 #Height of Frame
+        h = 320 #Height of Frame
 
         hs = self.root.winfo_screenheight() #Height of the screen
         
@@ -49,7 +49,7 @@ class MainFrame():
         self.frame_bottom.pack(side="bottom", fill="both", padx=5, expand=False)
         self.ttt1label = tk.Label(self.frame_bottom,
                                   font=self.font,
-                                  text="blue",
+                                  text="BLUE",
                                   )
         self.ttt1 = tk.Entry(self.frame_bottom,
                              # bg="firebrick1",
@@ -60,7 +60,7 @@ class MainFrame():
                              )
         self.ttt2label = tk.Label(self.frame_bottom,
                                   font=self.font,
-                                  text="red",
+                                  text="RED",
                                   )
         self.ttt2 = tk.Entry(self.frame_bottom,
                              # bg="yellow2",
@@ -71,7 +71,7 @@ class MainFrame():
                              )
         self.ttt3label = tk.Label(self.frame_bottom,
                                   font=self.font,
-                                  text="yellow",
+                                  text="YELLOW",
                                   )
         self.ttt3 = tk.Entry(self.frame_bottom,
                              # bg="lawn green",
@@ -82,7 +82,7 @@ class MainFrame():
                              )
         self.ttt4label = tk.Label(self.frame_bottom,
                                   font=self.font,
-                                  text="green",
+                                  text="GREEN",
                                   )
         self.ttt4 = tk.Entry(self.frame_bottom,
                              # bg="royal blue",
@@ -90,6 +90,16 @@ class MainFrame():
                              bg="gray12",
                              font=self.font,
                              #text="123",
+                             fg="white",
+                             )
+        self.ttt5label = tk.Label(self.frame_bottom,
+                                  font=self.font,
+                                  text="COLOR",
+                                  )
+        self.ttt5 = tk.Entry(self.frame_bottom,
+                             width=64,
+                             bg="gray12",
+                             font=self.font,
                              fg="white",
                              )
         self.ttt = tk.Label(self.frame_bottom,
@@ -107,7 +117,9 @@ class MainFrame():
         self.ttt3.grid(row=2, column=1, sticky="w")
         self.ttt4label.grid(row=3, column=0)
         self.ttt4.grid(row=3, column=1, sticky="w")
-        self.ttt.grid(row=4, column=0, sticky="w", columnspan=2)
+        self.ttt5label.grid(row=4, column=0)
+        self.ttt5.grid(row=4, column=1, sticky="w")
+        self.ttt.grid(row=5, column=0, sticky="w", columnspan=2)
 
         # self.ttt4.pack(side="bottom", fill="x", expand=False)
         # self.ttt3.pack(side="bottom", fill="x", expand=False)
@@ -433,7 +445,7 @@ class MainFrame():
         templist = []
         ta = 0
         tb = 0
-        
+
         for i, v in enumerate(self.list_colorPage):
             if ta == 0 and tb == 0:
                 ta = v
@@ -467,7 +479,12 @@ class MainFrame():
                         ta = v
                         tb = v
         print(','.join([str(_) for _ in templist]))
-            
+        self.ttt5.config(state="normal")
+        self.ttt5.delete(0, 'end')
+        self.ttt5.insert(0, ','.join([str(_) for _ in templist]))
+        self.ttt5.config(state="readonly",
+                         readonlybackground="black")
+
                 
             
     
@@ -498,24 +515,33 @@ class MainFrame():
                             self.list_colorPage.append(j+1)
                         else :
                             greypage += self.doc.page(j)
+
                     elif (self.doc.page(j).is_color or self.doc.page(j+1).is_color) and self.doc.page(j).annotations == 0 and self.doc.page(j+1).annotations == 0:
                         colorpage += self.doc.page(j)
                         colorpage += self.doc.page(j+1)
+
                         greypage += whitepage
                         greypage += whitepage
+
                         self.list_colorPage.append(j+1)
                         self.list_colorPage.append(j+2)
+
                     else :
                         greypage += self.doc.page(j)
                         greypage += self.doc.page(j+1)
+
             self.printColorNum()
+
             if os.path.isfile(str(imgpath1 +"\\"+file_name2+"_grey.xdw")):
                 os.remove(str(imgpath1 +"\\"+file_name2+"_grey.xdw"))
                 os.remove(str(imgpath1 +"\\"+file_name2+"_color.xdw"))
+
             outputpath = imgpath1 +"\\"+file_name2+"_color.xdw"
             outputpath2 = imgpath1 +"\\"+file_name2+"_grey.xdw"
+
             colorpage.export(str(outputpath),True)
             greypage.export(str(outputpath2), True)
+
             self.doc.close()
             self.docwhite.close()
             os.remove(whitepath)
@@ -533,14 +559,16 @@ class MainFrame():
             if self.RadioVariety.get() == 1: #단면
                 for j in range(self.doc.pages):
                     if self.doc.page(j).is_color and self.doc.page(j).annotations == 0:
-                        self.doc.export_image(j, dpi = 15)
+                        self.doc.export_image(j, dpi = 10)
                         img = cv2.imread(imgpath1+"\\"+file_name2+"_P"+str(j+1)+".xdw.bmp")
                         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-                        s = img_hsv[:, :, 1]                    # 채도 추출
-                        if np.all(( s == 0 ) | (s == 1)):       # 채도가 0 또는 1이면 greypage <- 이거 범위로 바꾸면 됨
+                        s = img_hsv[:, :, 1]
+
+                        if np.all( s <= 20 ):
                             greypage += self.doc.page(j)
                         else:
                             colorpage += self.doc.page(j)
+
                         os.remove(imgpath1+"\\"+file_name2+"_P"+str(j+1)+".xdw.bmp")
                     else:
                         greypage += self.doc.page(j)
@@ -549,22 +577,52 @@ class MainFrame():
                 for j in range(0,self.doc.pages,2):
                     if j == self.doc.pages -1:
                         if self.doc.page(j).is_color and self.doc.page(j).annotations == 0:
-                            colorpage += self.doc.page(j)
-                        else :
+                            self.doc.export_image(j, dpi=10)
+                            img = cv2.imread(imgpath1 + "\\" + file_name2 + "_P" + str(j + 1) + ".xdw.bmp")
+                            img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+                            s = img_hsv[:, :, 1]
+                            if np.all(s <= 20):
+                                greypage += self.doc.page(j)
+                            else:
+                                colorpage += self.doc.page(j)
+                        else:
                             greypage += self.doc.page(j)
                     elif (self.doc.page(j).is_color or self.doc.page(j+1).is_color) and self.doc.page(j).annotations == 0 and self.doc.page(j+1).annotations == 0:
-                        colorpage += self.doc.page(j)
-                        colorpage += self.doc.page(j+1)
+                        self.doc.export_image(j, dpi=10)
+                        self.doc.export_image(j+1, dpi=10)
+
+                        img1 = cv2.imread(imgpath1 + "\\" + file_name2 + "_P" + str(j + 1) + ".xdw.bmp")
+                        img2 = cv2.imread(imgpath1 + "\\" + file_name2 + "_P" + str(j + 2) + ".xdw.bmp")
+
+                        img_hsv1 = cv2.cvtColor(img1, cv2.COLOR_BGR2HSV)
+                        img_hsv2 = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
+
+                        s1 = img_hsv1[:, :, 1]
+                        s2 = img_hsv2[:, :, 1]
+
+                        if np.max(s1 > 20) or np.max(s2 > 20):
+                            colorpage += self.doc.page(j)
+                            colorpage += self.doc.page(j+1)
+                        else:
+                            greypage += self.doc.page(j)
+                            greypage += self.doc.page(j+1)
+
+                        os.remove(imgpath1 + "\\" + file_name2 + "_P" + str(j + 1) + ".xdw.bmp")
+                        os.remove(imgpath1 + "\\" + file_name2 + "_P" + str(j + 2) + ".xdw.bmp")
                     else :
                         greypage += self.doc.page(j)
                         greypage += self.doc.page(j+1)
+
             if os.path.isfile(str(imgpath1 +"\\"+file_name2+"_grey.xdw")):
                 os.remove(str(imgpath1 +"\\"+file_name2+"_grey.xdw"))
                 os.remove(str(imgpath1 +"\\"+file_name2+"_color.xdw"))
+
             outputpath = imgpath1 +"\\"+file_name2+"_color.xdw"
             outputpath2 = imgpath1 +"\\"+file_name2+"_grey.xdw"
+
             colorpage.export(str(outputpath),True)
             greypage.export(str(outputpath2), True)
+
             self.doc.close()
         except :
             self.doc.close()
@@ -581,7 +639,7 @@ class MainFrame():
                     templist.append(i)
             
             for j in templist:
-                self.doc.export_image(j,dpi = 15)
+                self.doc.export_image(j,dpi = 10)
                 self.isgray(imgpath1+"\\"+file_name+"_grey_P"+str(j+1)+".xdw.bmp",j+1)
                 os.remove(imgpath1+"\\"+file_name+"_grey_P"+str(j+1)+".xdw.bmp")
             self.doc.close()
@@ -604,7 +662,7 @@ class MainFrame():
                     templist.append(i)
             if self.RadioVariety.get() == 1:  #단면 간지 삭제
                 for j in templist:
-                    self.doc.export_image(j,dpi = 15)
+                    self.doc.export_image(j,dpi = 10)
                     if self.rv3.get() == True:
                         #self.isgray2(imgpath1+"\\"+file_name+"_grey_P"+str(j+1)+".xdw.JPEG",j+1)
                         self.isgray(imgpath1+"\\"+file_name+"_grey_P"+str(j+1)+".xdw.bmp",j+1)
@@ -624,7 +682,7 @@ class MainFrame():
                         templist[temp] = templist[temp] - temp
                         temp += 1
                     for j in templist:
-                        self.doc.export_image(j,dpi = 15)
+                        self.doc.export_image(j,dpi = 10)
                         if self.rv3.get() == True:
                             self.isgray(imgpath1+"\\"+file_name+"_grey_P"+str(j+1)+".xdw.bmp",j+1)
                             os.remove(imgpath1+"\\"+file_name+"_grey_P"+str(j+1)+".xdw.bmp")

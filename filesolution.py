@@ -1085,7 +1085,7 @@ class Login():
      
        self.root.mainloop()
         
-    def inputPwd(self):
+    def inputPwd(self,event):
        self.strvar =self.textb.get().strip()
        self.c.execute("SELECT * FROM table1 WHERE id=:Id",{"Id":1})
        a = list(self.c.fetchone())
@@ -1099,7 +1099,7 @@ class Login():
            tk.messagebox.showinfo("Error", "비밀번호 확인")
            print("Password Error")
 
-    def ChangePassword(self):
+    def ChangePassword(self,event):
         self.current = self.currentPwd.get().strip()
         self.new = self.newPwd.get().strip()
         self.c.execute("SELECT * FROM table1 WHERE id=:Id",{"Id":1})

@@ -39,7 +39,7 @@ class MainFrame():
         y = hs - (h + 70)
         
         #main
-        self.root.title("File Solution v1.1")
+        self.root.title("File Solution v2.0")
         self.root.geometry("%dx%d+%d+%d" % (w,h,x,y))
         self.root.resizable(False,False)
 
@@ -392,6 +392,32 @@ class MainFrame():
         self.txt1.configure(text=self.filename)
         
     def readLabelText(self):
+        self.ttt1.config(state="normal")
+        self.ttt1.delete(0, 'end')
+
+        self.ttt2.config(state="normal")
+        self.ttt2.delete(0, 'end')
+
+        self.ttt3.config(state="normal")
+        self.ttt3.delete(0, 'end')
+
+        self.ttt4.config(state="normal")
+        self.ttt4.delete(0, 'end')
+
+        self.ttt5.config(state="normal")
+        self.ttt5.delete(0, 'end')
+
+        self.ttt1.config(state="readonly",
+                         readonlybackground="black")
+        self.ttt2.config(state="readonly",
+                         readonlybackground="black")
+        self.ttt3.config(state="readonly",
+                         readonlybackground="black")
+        self.ttt4.config(state="readonly",
+                         readonlybackground="black")
+        self.ttt5.config(state="readonly",
+                         readonlybackground="black")
+
         if not self.filenames:
             tk.messagebox.showinfo("Error","파일 확인")
         else:
@@ -562,7 +588,19 @@ class MainFrame():
                         self.doc.export_image(j, dpi = 10)
                         img = cv2.imread(imgpath1+"\\"+file_name2+"_P"+str(j+1)+".xdw.bmp")
                         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
                         s = img_hsv[:, :, 1]
+
+                        """
+                        total_s_size = s.size
+                        threshold = total_s_size * 0.003
+                        count = np.sum( s > 20 )
+
+                        if count <= threshold:
+                            greypage += self.doc.page(j)
+                        else:
+                            colorpage += self.doc.page(j)
+                        """
 
                         if np.all( s <= 20 ):
                             greypage += self.doc.page(j)
@@ -599,6 +637,23 @@ class MainFrame():
 
                         s1 = img_hsv1[:, :, 1]
                         s2 = img_hsv2[:, :, 1]
+                        """
+                        total_s_size1 = s1.size
+                        total_s_size2 = s2.size
+
+                        threshold1 = total_s_size1 * 0.003
+                        threshold2 = total_s_size2 * 0.003
+
+                        count1 = np.sum( s1 > 20 )
+                        count2 = np.sum( s2 > 20 )
+
+                        if ( count1 >= threshold1 ) or ( count2 >= threshold2 ):
+                            colorpage += self.doc.page(j)
+                            colorpage += self.doc.page(j + 1)
+                        else:
+                            greypage += self.doc.page(j)
+                            greypage += self.doc.page(j + 1)
+                        """
 
                         if np.max(s1 > 20) or np.max(s2 > 20):
                             colorpage += self.doc.page(j)
@@ -698,51 +753,50 @@ class MainFrame():
             
     def printColor(self):
         print("\n")
+        self.ttt1.config(state="normal")
+        self.ttt1.delete(0, 'end')
+
+        self.ttt2.config(state="normal")
+        self.ttt2.delete(0, 'end')
+
+        self.ttt3.config(state="normal")
+        self.ttt3.delete(0, 'end')
+
+        self.ttt4.config(state="normal")
+        self.ttt4.delete(0, 'end')
+
         if self.list_blue:
             print(" ")
             print("Blue")
             print(','.join([str(_) for _ in self.list_blue]))
-            #entry_text_blue.set('blue,'.join([str(_) for _ in self.list_blue]))
-            #self.ttt1.insert(0, 'blue,'.join([str(_) for _ in self.list_blue]))
-
-            self.ttt1.config(state="normal")
-            self.ttt1.delete(0, 'end')
             self.ttt1.insert(0, ','.join([str(_) for _ in self.list_blue]))
-            self.ttt1.config(state="readonly",
-                             readonlybackground="black")
+
         if self.list_red:
             print(" ")
             print("Red")
             print(','.join([str(_) for _ in self.list_red]))
-            #entry_text_red.set('red,'.join([str(_) for _ in self.list_red]))
-            #self.ttt2.insert(0, 'red,'.join([str(_) for _ in self.list_red]))
-            self.ttt2.config(state="normal")
-            self.ttt2.delete(0, 'end')
             self.ttt2.insert(0, ','.join([str(_) for _ in self.list_red]))
-            self.ttt2.config(state="readonly",
-                             readonlybackground="black")
+
         if self.list_yellow:
             print(" ")
             print("Yellow")
             print(','.join([str(_) for _ in self.list_yellow]))
-            #entry_text_yellow.set('yellow,'.join([str(_) for _ in self.list_yellow]))
-            #self.ttt3.insert(0, 'yellow,'.join([str(_) for _ in self.list_yellow]))
-            self.ttt3.config(state="normal")
-            self.ttt3.delete(0, 'end')
             self.ttt3.insert(0, ','.join([str(_) for _ in self.list_yellow]))
-            self.ttt3.config(state="readonly",
-                             readonlybackground="black")
+
         if self.list_green:
             print(" ")
             print("Green")
             print(','.join([str(_) for _ in self.list_green]))
-            #entry_text_green.set('green,'.join([str(_) for _ in self.list_green]))
-            #self.ttt4.insert(0, 'green,'.join([str(_) for _ in self.list_green]))
-            self.ttt4.config(state="normal")
-            self.ttt4.delete(0, 'end')
             self.ttt4.insert(0, ','.join([str(_) for _ in self.list_green]))
-            self.ttt4.config(state="readonly",
-                             readonlybackground="black")
+
+        self.ttt1.config(state="readonly",
+                         readonlybackground="black")
+        self.ttt2.config(state="readonly",
+                         readonlybackground="black")
+        self.ttt3.config(state="readonly",
+                         readonlybackground="black")
+        self.ttt4.config(state="readonly",
+                         readonlybackground="black")
         
         
             
@@ -819,19 +873,27 @@ class MainFrame():
         self.dirname = "[정리"
         if self.checkv3.get() == True:
             self.ext.append('.pdf')
+            self.ext.append('.PDF')
             self.dirname += ".pdf"
         if self.checkv4.get() == True:
             self.ext.append('.hwp')
+            self.ext.append('.HWP')
             self.dirname += ".hwp"
         if self.checkv5.get() == True:
             self.ext.append('.doc')
             self.ext.append('.docx')
             self.ext.append('.docm')
+            self.ext.append('.DOC')
+            self.ext.append('.DOCX')
+            self.ext.append('.DOCM')
             self.dirname += ".doc"
         if self.checkv6.get() == True:
             self.ext.append('.ppt')
             self.ext.append('.pptx')
             self.ext.append('.pptm')
+            self.ext.append('.PPT')
+            self.ext.append('.PPTX')
+            self.ext.append('.PPTM')
             self.dirname += ".ppt"
         if self.checkv7.get() == True:
             self.ext.append('.xls')
@@ -839,9 +901,15 @@ class MainFrame():
             self.ext.append('.xml')
             self.ext.append('.xlsm')
             self.ext.append('.xlsb')
+            self.ext.append('.XLS')
+            self.ext.append('.XLSX')
+            self.ext.append('.XML')
+            self.ext.append('.XLSM')
+            self.ext.append('.XLSB')
             self.dirname += ".xls"
         if self.checkv8.get() == True:
             self.ext.append('.hwpx')
+            self.ext.append('.HWPX')
             self.dirname += ".hwpx"
         if self.checkv2.get() == True:
             self.dirname = "[정리"
@@ -1049,7 +1117,7 @@ class Login():
        
        self.button1 = tk.Button(self.root,
                                text="Insert",
-                               command=self.inputPwd)
+                               command=self.inputPwd2)
        self.currentPwd = tk.Entry(self.root,width=20,textvariable=self.current,show="*")
        self.newPwd = tk.Entry(self.root,width=20,textvariable=self.new,show="*")
        self.button2 = tk.Button(self.root,
@@ -1086,6 +1154,20 @@ class Login():
        self.root.mainloop()
         
     def inputPwd(self,event):
+       self.strvar =self.textb.get().strip()
+       self.c.execute("SELECT * FROM table1 WHERE id=:Id",{"Id":1})
+       a = list(self.c.fetchone())
+       b = hashlib.sha256(self.strvar.encode()).hexdigest()
+       if b == a[1]:
+           self.conn.close()
+           self.root.destroy()
+           app=MainFrame()
+       else:
+           self.textb.delete(0,100)
+           tk.messagebox.showinfo("Error", "비밀번호 확인")
+           print("Password Error")
+
+    def inputPwd2(self):
        self.strvar =self.textb.get().strip()
        self.c.execute("SELECT * FROM table1 WHERE id=:Id",{"Id":1})
        a = list(self.c.fetchone())

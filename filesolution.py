@@ -30,22 +30,24 @@ class MainFrame():
         self.root = tk.Tk()
         self.font=tk.font.Font(family="맑은 고딕", weight="bold")
         
-        w = 650 #Width of Frame
+        w = 633 #Width of Frame
         h = 320 #Height of Frame
 
         hs = self.root.winfo_screenheight() #Height of the screen
         
         x = 0
         y = hs - (h + 70)
-        
+
         #main
-        self.root.title("File Solution v2.0")
+        self.root.title("File Solution v2.1")
         self.root.geometry("%dx%d+%d+%d" % (w,h,x,y))
-        self.root.resizable(False,False)
+        self.root.resizable(True,False)
+        self.root.minsize(w,h)
+
 
         self.frame_bottom = tk.Frame(self.root,
                                      relief="solid",
-                                     bd=1)
+                                     bd=0)
         self.frame_bottom.pack(side="bottom", fill="both", padx=5, expand=False)
         self.ttt1label = tk.Label(self.frame_bottom,
                                   font=self.font,
@@ -53,7 +55,7 @@ class MainFrame():
                                   )
         self.ttt1 = tk.Entry(self.frame_bottom,
                              # bg="firebrick1",
-                             width=64,
+                             width=300,
                              bg="gray12",
                              font=self.font,
                              fg="white",
@@ -64,7 +66,7 @@ class MainFrame():
                                   )
         self.ttt2 = tk.Entry(self.frame_bottom,
                              # bg="yellow2",
-                             width=64,
+                             width=300,
                              bg="gray12",
                              font=self.font,
                              fg="white",
@@ -75,7 +77,7 @@ class MainFrame():
                                   )
         self.ttt3 = tk.Entry(self.frame_bottom,
                              # bg="lawn green",
-                             width=64,
+                             width=300,
                              bg="gray12",
                              font=self.font,
                              fg="white",
@@ -86,7 +88,7 @@ class MainFrame():
                                   )
         self.ttt4 = tk.Entry(self.frame_bottom,
                              # bg="royal blue",
-                             width=64,
+                             width=300,
                              bg="gray12",
                              font=self.font,
                              #text="123",
@@ -97,14 +99,14 @@ class MainFrame():
                                   text="COLOR",
                                   )
         self.ttt5 = tk.Entry(self.frame_bottom,
-                             width=64,
+                             width=300,
                              bg="gray12",
                              font=self.font,
                              fg="white",
                              )
         self.ttt = tk.Label(self.frame_bottom,
                             text="무단 복제 금지",
-                            width=64,
+                            width=65,
                             bg="red",
                             font=self.font,
                             fg="white"
@@ -140,6 +142,7 @@ class MainFrame():
                                  text="파일 선택",
                                  command=self.openFile
                                  )
+        self.root.bind('<Control-z>', self.openFile)
 
         self.button2 = tk.Button(self.frame_left,
                                  bg="red",
@@ -150,23 +153,27 @@ class MainFrame():
                                  command=self.readLabelText
                                  #command=self.thread_start
                                  )
+        self.root.bind('<Control-x>', self.readLabelText)
+
         self.button1.grid(row = 0,column =0,padx=3,sticky="W")
         self.button2.grid(row = 0,column =1,padx=3,sticky="E")  
         
-        self.RadioVariety = tk.IntVar() 
+        self.RadioVariety = tk.IntVar()
+        self.RadioVariety.set(1)
         self.r1 = tk.Radiobutton(self.frame_left,
                                  text = "단면",
                                  variable=self.RadioVariety,value=1)
         self.r2 = tk.Radiobutton(self.frame_left,
                                  text = "양면",
                                  variable=self.RadioVariety,value=2)
-        self.r1.grid(row = 1,column =0,pady=1,sticky="e")
-        self.r2.grid(row = 1,column =1,pady=1,sticky="w")
-        
+        self.r1.grid(row = 1,column =0, pady=1,sticky="e")
+        self.r2.grid(row = 1,column =1, pady=1,sticky="w")
+
         self.rv3 = tk.BooleanVar()
         self.rv3.set(True)
         self.r3 = tk.Checkbutton(self.frame_left,
                                  text = "컬러흑백 분류",
+                                 width=10,
                                  variable=self.rv3,
                                  command=self.checkbtn4
                                  )
@@ -177,10 +184,10 @@ class MainFrame():
         self.r4 = tk.Checkbutton(self.frame_left,
                                  text = "간지 삭제",
                                  variable=self.rv4,
-                                 command=self.checkbtn4
+                                 command=self.checkbtn5
                                  )
         self.r4.grid(row = 2,column =1,sticky="w")
-        
+
         self.rv5 = tk.BooleanVar()
         self.rv5.set(False)
         self.r5 = tk.Checkbutton(self.frame_left,
@@ -188,8 +195,21 @@ class MainFrame():
                                  variable=self.rv5,
                                  command=self.checkbtn3
                                  )
-        self.r5.grid(row = 3,column =0,sticky="we")
-        
+        self.r5.grid(row = 3,column =1,sticky="w")
+
+        self.frame_left_colorselect = tk.Frame(self.frame_left)
+        self.frame_left_colorselect.grid(row=3,column=0)
+        self.RadioVariety2 = tk.IntVar()
+        self.RadioVariety2.set(1)
+        self.r6 = tk.Radiobutton(self.frame_left_colorselect,
+                                 text="10%",
+                                 variable=self.RadioVariety2, value=1)
+        self.r7 = tk.Radiobutton(self.frame_left_colorselect,
+                                 text="100%",
+                                 variable=self.RadioVariety2, value=2)
+        self.r6.grid(row=0, column=0, sticky="e")
+        self.r7.grid(row=0, column=1, sticky="w")
+
         self.doc = ""
         self.filenames = [] #선택한 파일 이름
         self.filepaths = [] #선택한 파일 경로
@@ -233,7 +253,7 @@ class MainFrame():
                                          bd=1)
         
         #self.frame_right.grid(row = 0,column =1,sticky="nwes")
-        self.frame_right.pack(side="right",fill="both",padx=5,expand=False)
+        self.frame_right.pack(side="left",fill="both",padx=5,expand=False)
         self.button3 = tk.Button(self.frame_right,
                                  width=15,
                                  font=self.font,
@@ -297,11 +317,18 @@ class MainFrame():
         self.checkv8 = tk.BooleanVar()
         self.checkv8.set(True)
         self.c8 = tk.Checkbutton(self.checkframe,
-                                 text="*.hwpx",
+                                 text="*.",
                                  variable=self.checkv8,
                                  command=self.checkbtn2)
         self.c8.grid(row=0, column=3)
-        
+
+        self.extension = ""
+        self.inputbox1 = tk.Entry(self.checkframe,
+                                  textvariable= self.extension,
+                                  width=25)
+        #self.inputbox1.get().strip()
+        self.inputbox1.grid(row=0, column=4)
+        """
         self.checkv5 = tk.BooleanVar()
         self.checkv5.set(True)
         self.c5 = tk.Checkbutton(self.checkframe,
@@ -325,9 +352,9 @@ class MainFrame():
                                  variable=self.checkv7,
                                  command=self.checkbtn2)
         self.c7.grid(row = 0,column =6)
-        
+        """
        
-        self.txt2 = tk.Label(self.frame_right, text = "",wraplength = 300) 
+        self.txt2 = tk.Label(self.frame_right, text = "",wraplength = 280)
         self.txt2.grid(row = 2,column =0,columnspan = 2,sticky="nwes")
         
         self.dir_list =[]
@@ -343,16 +370,20 @@ class MainFrame():
         if self.checkv2.get():
             self.c3.select()
             self.c4.select()
+            """
             self.c5.select()
             self.c6.select()
             self.c7.select()
+            """
             self.c8.select()
         else:
             self.c3.deselect()
             self.c4.deselect()
+            """
             self.c5.deselect()
             self.c6.deselect()
             self.c7.deselect()
+            """
             self.c8.deselect()
             
     def checkbtn2(self):
@@ -361,18 +392,39 @@ class MainFrame():
             
     def checkbtn3(self):
         if self.rv5.get():
+            self.RadioVariety2.set(0)
+            self.r6.configure(state="disabled")
+            self.r7.configure(state="disabled")
             self.r3.deselect()
             self.r4.deselect()
         else:
+            self.r6.configure(state="normal")
+            self.r7.configure(state="normal")
+            self.RadioVariety2.set(1)
             self.r3.select()
             self.r4.select()
         
     def checkbtn4(self):
-        if self.rv3.get() or self.rv4.get():
+        if self.rv3.get():
+            self.r6.configure(state="normal")
+            self.r7.configure(state="normal")
+            self.RadioVariety2.set(1)
+            self.r6.select()
             self.r5.deselect()
-            
+        else:
+            self.RadioVariety2.set(0)
+            self.r6.configure(state="disabled")
+            self.r7.configure(state="disabled")
+
+
+
+    def checkbtn5(self):
+        if self.rv4.get():
+            self.r5.deselect()
+
+
     #pdf 열기
-    def openFile(self):  
+    def openFile(self, event=None):
         
         self.filepaths.clear()
         self.filenames.clear()
@@ -391,7 +443,7 @@ class MainFrame():
             self.filepaths.append(v)
         self.txt1.configure(text=self.filename)
         
-    def readLabelText(self):
+    def readLabelText(self, event=None):
         self.ttt1.config(state="normal")
         self.ttt1.delete(0, 'end')
 
@@ -585,7 +637,7 @@ class MainFrame():
             if self.RadioVariety.get() == 1: #단면
                 for j in range(self.doc.pages):
                     if self.doc.page(j).is_color and self.doc.page(j).annotations == 0:
-                        self.doc.export_image(j, dpi = 10)
+                        self.doc.export_image(j, dpi = 15)
                         img = cv2.imread(imgpath1+"\\"+file_name2+"_P"+str(j+1)+".xdw.bmp")
                         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -601,11 +653,16 @@ class MainFrame():
                         else:
                             colorpage += self.doc.page(j)
                         """
-
-                        if np.all( s <= 20 ):
-                            greypage += self.doc.page(j)
-                        else:
-                            colorpage += self.doc.page(j)
+                        if self.RadioVariety2.get() == 1: # 컬러 10
+                            if np.all( s <= 20 ):
+                                greypage += self.doc.page(j)
+                            else:
+                                colorpage += self.doc.page(j)
+                        elif self.RadioVariety2.get() == 2: # 컬러 100
+                            if np.all( s <= 3 ):
+                                greypage += self.doc.page(j)
+                            else:
+                                colorpage += self.doc.page(j)
 
                         os.remove(imgpath1+"\\"+file_name2+"_P"+str(j+1)+".xdw.bmp")
                     else:
@@ -615,19 +672,26 @@ class MainFrame():
                 for j in range(0,self.doc.pages,2):
                     if j == self.doc.pages -1:
                         if self.doc.page(j).is_color and self.doc.page(j).annotations == 0:
-                            self.doc.export_image(j, dpi=10)
+                            self.doc.export_image(j, dpi=15)
                             img = cv2.imread(imgpath1 + "\\" + file_name2 + "_P" + str(j + 1) + ".xdw.bmp")
                             img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
                             s = img_hsv[:, :, 1]
-                            if np.all(s <= 20):
-                                greypage += self.doc.page(j)
-                            else:
-                                colorpage += self.doc.page(j)
+
+                            if self.RadioVariety2.get() == 1: # 컬러 10
+                                if np.all(s <= 20):
+                                    greypage += self.doc.page(j)
+                                else:
+                                    colorpage += self.doc.page(j)
+                            elif self.RadioVariety2.get() == 2: # 컬러 100
+                                if np.all(s <= 3):
+                                    greypage += self.doc.page(j)
+                                else:
+                                    colorpage += self.doc.page(j)
                         else:
                             greypage += self.doc.page(j)
                     elif (self.doc.page(j).is_color or self.doc.page(j+1).is_color) and self.doc.page(j).annotations == 0 and self.doc.page(j+1).annotations == 0:
-                        self.doc.export_image(j, dpi=10)
-                        self.doc.export_image(j+1, dpi=10)
+                        self.doc.export_image(j, dpi=15)
+                        self.doc.export_image(j+1, dpi=15)
 
                         img1 = cv2.imread(imgpath1 + "\\" + file_name2 + "_P" + str(j + 1) + ".xdw.bmp")
                         img2 = cv2.imread(imgpath1 + "\\" + file_name2 + "_P" + str(j + 2) + ".xdw.bmp")
@@ -655,16 +719,25 @@ class MainFrame():
                             greypage += self.doc.page(j + 1)
                         """
 
-                        if np.max(s1 > 20) or np.max(s2 > 20):
-                            colorpage += self.doc.page(j)
-                            colorpage += self.doc.page(j+1)
-                        else:
-                            greypage += self.doc.page(j)
-                            greypage += self.doc.page(j+1)
+                        if self.RadioVariety2.get() == 1: # 컬러 10
+                            if np.max(s1 > 20) or np.max(s2 > 20):
+                                colorpage += self.doc.page(j)
+                                colorpage += self.doc.page(j+1)
+                            else:
+                                greypage += self.doc.page(j)
+                                greypage += self.doc.page(j+1)
+
+                        elif self.RadioVariety2.get() == 2: # 컬러 100
+                            if np.max(s1 > 3) or np.max(s2 > 3):
+                                colorpage += self.doc.page(j)
+                                colorpage += self.doc.page(j+1)
+                            else:
+                                greypage += self.doc.page(j)
+                                greypage += self.doc.page(j+1)
 
                         os.remove(imgpath1 + "\\" + file_name2 + "_P" + str(j + 1) + ".xdw.bmp")
                         os.remove(imgpath1 + "\\" + file_name2 + "_P" + str(j + 2) + ".xdw.bmp")
-                    else :
+                    else:
                         greypage += self.doc.page(j)
                         greypage += self.doc.page(j+1)
 
@@ -870,15 +943,19 @@ class MainFrame():
         self.txt2.configure(text=self.root.directory)
         
     def checkExt(self):
+        self.dir = []
         self.dirname = "[정리"
         if self.checkv3.get() == True:
             self.ext.append('.pdf')
             self.ext.append('.PDF')
-            self.dirname += ".pdf"
+            self.dir.append(".pdf")
         if self.checkv4.get() == True:
             self.ext.append('.hwp')
             self.ext.append('.HWP')
-            self.dirname += ".hwp"
+            self.ext.append('.hwpx')
+            self.ext.append('.HWPX')
+            self.dir.append(".hwp")
+        """
         if self.checkv5.get() == True:
             self.ext.append('.doc')
             self.ext.append('.docx')
@@ -911,9 +988,22 @@ class MainFrame():
             self.ext.append('.hwpx')
             self.ext.append('.HWPX')
             self.dirname += ".hwpx"
+        """
+        if self.checkv8.get() == True:
+            self.extension = self.inputbox1.get().strip().replace(" ","").split(",")
+            for a in self.extension:
+                if len(a) < 1:
+                    continue
+                self.ext.append('.' + a)
+                self.dir.append('.' + a)
         if self.checkv2.get() == True:
             self.dirname = "[정리"
-        
+
+        self.ext = list(set(self.ext))
+        self.dir = list(set(self.dir))
+
+        for a in self.dir:
+            self.dirname += a
         
     def makeup2(self):
         
@@ -1117,7 +1207,7 @@ class Login():
        
        self.button1 = tk.Button(self.root,
                                text="Insert",
-                               command=self.inputPwd2)
+                               command=self.inputPwd)
        self.currentPwd = tk.Entry(self.root,width=20,textvariable=self.current,show="*")
        self.newPwd = tk.Entry(self.root,width=20,textvariable=self.new,show="*")
        self.button2 = tk.Button(self.root,
@@ -1153,21 +1243,7 @@ class Login():
      
        self.root.mainloop()
         
-    def inputPwd(self,event):
-       self.strvar =self.textb.get().strip()
-       self.c.execute("SELECT * FROM table1 WHERE id=:Id",{"Id":1})
-       a = list(self.c.fetchone())
-       b = hashlib.sha256(self.strvar.encode()).hexdigest()
-       if b == a[1]:
-           self.conn.close()
-           self.root.destroy()
-           app=MainFrame()
-       else:
-           self.textb.delete(0,100)
-           tk.messagebox.showinfo("Error", "비밀번호 확인")
-           print("Password Error")
-
-    def inputPwd2(self):
+    def inputPwd(self,event=None):
        self.strvar =self.textb.get().strip()
        self.c.execute("SELECT * FROM table1 WHERE id=:Id",{"Id":1})
        a = list(self.c.fetchone())
@@ -1204,3 +1280,4 @@ class Login():
             self.newPwd.delete(0,100)
 
 app = Login()
+#app=MainFrame()
